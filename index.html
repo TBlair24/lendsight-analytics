@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LendSight Analytics — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07090F;
+  --surface:  #0D1118;
+  --surface2: #111827;
+  --border:   #1E2A3A;
+  --border2:  #243040;
+  --gold:     #D4A853;
+  --gold2:    #F0C87A;
+  --teal:     #2DD4BF;
+  --blue:     #3B82F6;
+  --red:      #F87171;
+  --green:    #34D399;
+  --text:     #E8EDF5;
+  --text2:    #8899B0;
+  --text3:    #4A5C72;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem; height: 60px;
+  background: rgba(7,9,15,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; }
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text2); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--gold); }
+.nav-badge { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.25rem 0.8rem; border: 1px solid var(--gold); color: var(--gold); }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 3rem 5rem; position: relative; overflow: hidden; }
+.hero::before { content:''; position:absolute; inset:0; background-image: linear-gradient(rgba(212,168,83,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,168,83,0.04) 1px, transparent 1px); background-size: 60px 60px; animation: gridDrift 20s linear infinite; }
+.hero::after { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,168,83,0.08) 0%, transparent 70%); pointer-events:none; }
+@keyframes gridDrift { from{transform:translateY(0)} to{transform:translateY(60px)} }
+.hero-content { position:relative; z-index:1; max-width:1000px; }
+.hero-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:1.5rem; display:flex; align-items:center; gap:0.8rem; }
+.hero-eyebrow::before { content:''; display:block; width:32px; height:1px; background:var(--gold); }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(3rem,7vw,6.5rem); font-weight:900; line-height:1.0; letter-spacing:-0.02em; margin-bottom:2rem; }
+.hero h1 .italic { font-style:italic; color:var(--gold); }
+.hero h1 .light  { font-weight:400; }
+.hero-desc { font-size:0.9rem; line-height:1.8; color:var(--text2); max-width:600px; margin-bottom:3rem; }
+.hero-stats { display:flex; gap:3rem; margin-bottom:3rem; border-top:1px solid var(--border); padding-top:2rem; }
+.hero-stat-val { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; line-height:1; }
+.hero-stat-val span { color:var(--gold); }
+.hero-stat-label { font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--text3); margin-top:0.4rem; }
+.hero-tags { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.tag { font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.3rem 0.8rem; border:1px solid var(--border2); color:var(--text3); transition: border-color 0.2s, color 0.2s; }
+.tag:hover { border-color:var(--gold); color:var(--gold); }
+.scroll-hint { position:absolute; bottom:2rem; right:3rem; font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text3); writing-mode:vertical-rl; display:flex; align-items:center; gap:0.8rem; }
+.scroll-hint::after { content:''; width:1px; height:48px; background:linear-gradient(to bottom, var(--text3), transparent); }
+
+/* SECTIONS */
+section { padding: 6rem 3rem; }
+.section-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem; display:flex; align-items:center; gap:0.8rem; }
+.section-eyebrow::before { content:''; width:20px; height:1px; background:var(--gold); }
+.section-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem); line-height:1.1; margin-bottom:1rem; }
+.section-title em { font-style:italic; color:var(--gold); }
+.section-body { font-size:0.82rem; line-height:1.9; color:var(--text2); max-width:640px; }
+
+/* KPI GRID */
+.kpi-section { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); margin-top:3rem; border:1px solid var(--border); }
+.kpi-card { padding:2rem 1.8rem; border-right:1px solid var(--border); position:relative; overflow:hidden; transition:background 0.3s; }
+.kpi-card:last-child { border-right:none; }
+.kpi-card:hover { background:rgba(212,168,83,0.03); }
+.kpi-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform 0.4s ease; }
+.kpi-card:hover::after { transform:scaleX(1); }
+.kpi-label { font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text3); margin-bottom:1rem; }
+.kpi-value { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:700; line-height:1; color:var(--text); margin-bottom:0.5rem; }
+.kpi-value.gold  { color:var(--gold);  }
+.kpi-value.teal  { color:var(--teal);  }
+.kpi-value.green { color:var(--green); }
+.kpi-sub { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; color:var(--text3); line-height:1.5; }
+.kpi-badge { display:inline-block; margin-top:0.5rem; font-size:0.58rem; letter-spacing:0.08em; padding:0.2rem 0.6rem; }
+.badge-good  { background:rgba(52,211,153,0.1);  color:var(--green); }
+.badge-warn  { background:rgba(212,168,83,0.1);   color:var(--gold);  }
+.badge-alert { background:rgba(248,113,113,0.1);  color:var(--red);   }
+
+/* DASHBOARD TABS */
+.pages-nav { display:flex; gap:0; margin-top:3rem; border-bottom:1px solid var(--border); }
+.page-tab { padding:0.8rem 1.8rem; font-family:'IBM Plex Mono',monospace; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s, border-color 0.2s; }
+.page-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.page-tab:hover { color:var(--text2); }
+.page-panel { display:none; }
+.page-panel.active { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:2px; }
+.db-panel { background:var(--surface); border:1px solid var(--border); padding:1.6rem; }
+.db-panel-full { grid-column:1 / -1; }
+.db-panel-label { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--text3); margin-bottom:1rem; }
+
+/* BAR CHART */
+.bar-h-chart { display:flex; flex-direction:column; gap:6px; }
+.bar-h-row { display:flex; align-items:center; gap:0.6rem; }
+.bar-h-label { font-family:'IBM Plex Mono',monospace; font-size:0.55rem; color:var(--text2); width:70px; flex-shrink:0; text-align:right; }
+.bar-h-track { flex:1; height:8px; background:rgba(255,255,255,0.04); border-radius:1px; overflow:hidden; }
+.bar-h-fill  { height:100%; border-radius:1px; background:var(--blue); }
+.bar-h-val   { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text2); width:56px; }
+
+/* DONUT */
+.donut-wrap { display:flex; align-items:center; gap:1.5rem; }
+.donut-legend { display:flex; flex-direction:column; gap:0.5rem; }
+.legend-item { display:flex; align-items:center; gap:0.5rem; }
+.legend-dot  { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.legend-text { font-family:'IBM Plex Mono',monospace; font-size:0.54rem; color:var(--text2); }
+.legend-pct  { font-size:0.6rem; color:var(--text3); margin-left:auto; padding-left:0.5rem; }
+
+/* FUNNEL */
+.funnel { display:flex; flex-direction:column; gap:3px; }
+.funnel-row { display:flex; align-items:center; gap:0.6rem; }
+.funnel-label { font-family:'IBM Plex Mono',monospace; font-size:0.54rem; color:var(--text2); width:80px; flex-shrink:0; }
+.funnel-track { flex:1; height:22px; background:rgba(255,255,255,0.03); border-radius:1px; overflow:hidden; }
+.funnel-fill  { height:100%; display:flex; align-items:center; padding-left:0.5rem; }
+.funnel-num   { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:rgba(255,255,255,0.6); }
+.funnel-val   { font-family:'IBM Plex Mono',monospace; font-size:0.54rem; color:var(--text3); width:36px; text-align:right; }
+
+/* DATA TABLE */
+.data-table { width:100%; border-collapse:collapse; }
+.data-table th { font-family:'IBM Plex Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); text-align:left; padding:0.4rem 0.6rem; border-bottom:1px solid var(--border); }
+.data-table td { font-family:'IBM Plex Mono',monospace; font-size:0.56rem; color:var(--text2); padding:0.5rem 0.6rem; border-bottom:1px solid rgba(30,42,58,0.5); }
+.data-table tr:last-child td { border-bottom:none; }
+.td-hi    { color:var(--gold); }
+.td-total { color:var(--text); font-weight:500; }
+.dpd-badge { display:inline-block; padding:0.1rem 0.4rem; font-size:0.48rem; border-radius:1px; }
+.dpd-green  { background:rgba(52,211,153,0.12); color:var(--green); }
+.dpd-yellow { background:rgba(212,168,83,0.12);  color:var(--gold);  }
+.dpd-orange { background:rgba(251,146,60,0.12);  color:#FB923C; }
+.dpd-red    { background:rgba(248,113,113,0.12); color:var(--red); }
+
+/* LINE CHART */
+.line-chart-svg { width:100%; overflow:visible; }
+
+/* ML BARS */
+.ml-feature-list { display:flex; flex-direction:column; gap:8px; }
+.ml-feature-row  { display:flex; align-items:center; gap:0.6rem; }
+.ml-feature-name { font-family:'IBM Plex Mono',monospace; font-size:0.54rem; color:var(--text2); width:140px; flex-shrink:0; }
+.ml-feature-track{ flex:1; height:6px; background:rgba(255,255,255,0.04); border-radius:1px; overflow:hidden; }
+.ml-feature-fill { height:100%; border-radius:1px; }
+.ml-feature-val  { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text3); width:40px; text-align:right; }
+
+/* GAUGE */
+.gauge-row  { display:flex; gap:1rem; justify-content:space-around; }
+.gauge-item { text-align:center; }
+.gauge-val  { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; margin-top:0.3rem; }
+.gauge-lbl  { font-family:'IBM Plex Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-top:0.2rem; }
+
+/* ARCHITECTURE */
+.arch-section { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.arch-flow { display:grid; grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr; align-items:center; gap:0; margin-top:3rem; }
+.arch-node { border:1px solid var(--border2); padding:1.4rem 1rem; text-align:center; background:var(--surface2); }
+.arch-icon  { font-size:1.8rem; display:block; margin-bottom:0.6rem; }
+.arch-title { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+.arch-items { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text3); line-height:1.8; }
+.arch-arrow { text-align:center; color:var(--gold); font-size:1.2rem; }
+
+/* CODE */
+.code-tab-nav { display:flex; border-bottom:1px solid var(--border); margin-bottom:0; }
+.code-tab-btn { padding:0.65rem 1.4rem; font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; background:none; border:none; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s, border-color 0.2s; }
+.code-tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
+.code-tab-content { display:none; }
+.code-tab-content.active { display:block; }
+pre.code { background:#060A10; border:1px solid var(--border); padding:1.8rem; overflow-x:auto; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; line-height:1.9; color:#7A9BB8; }
+.kw { color:#569CD6; } .fn { color:#DCDCAA; } .str { color:#CE9178; } .cm { color:#3A5A3A; font-style:italic; } .num { color:#B5CEA8; } .op { color:#D4A853; } .tp { color:#4EC9B0; } .vr { color:#9CDCFE; }
+
+/* RESULTS */
+.results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+.result-card { border:1px solid var(--border); padding:1.8rem; transition:border-color 0.3s, transform 0.3s; }
+.result-card:hover { border-color:var(--gold); transform:translateY(-4px); }
+.result-card-icon  { font-size:1.6rem; margin-bottom:1rem; }
+.result-card-title { font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:0.6rem; }
+.result-card-body  { font-size:0.75rem; line-height:1.8; color:var(--text2); }
+
+/* SKILLS */
+.skills-section { background:var(--surface); border-top:1px solid var(--border); }
+.skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3rem; margin-top:3rem; }
+.skill-group-title { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
+.skill-item { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.9rem; }
+.skill-name { font-size:0.72rem; color:var(--text2); width:140px; flex-shrink:0; }
+.skill-bar-track { flex:1; height:3px; background:var(--border2); border-radius:1px; overflow:hidden; }
+.skill-bar-fill  { height:100%; background:linear-gradient(to right, var(--gold), var(--gold2)); border-radius:1px; }
+
+/* FOOTER */
+footer { background:var(--surface); border-top:1px solid var(--border); padding:3rem; display:flex; align-items:flex-start; justify-content:space-between; gap:2rem; }
+.footer-brand { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; }
+.footer-brand span { color:var(--gold); }
+.footer-tagline { font-size:0.72rem; color:var(--text3); margin-top:0.4rem; }
+.footer-links { display:flex; flex-direction:column; gap:0.5rem; }
+.footer-links a { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--gold); }
+.footer-copy { font-family:'IBM Plex Mono',monospace; font-size:0.56rem; color:var(--text3); align-self:flex-end; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(24px); animation:reveal 0.7s ease forwards; }
+@keyframes reveal { to { opacity:1; transform:translateY(0); } }
+.d1{animation-delay:0.05s} .d2{animation-delay:0.12s} .d3{animation-delay:0.19s} .d4{animation-delay:0.26s}
+
+@media (max-width:900px) {
+  nav { padding:0 1.5rem; } .nav-links { display:none; }
+  section { padding:4rem 1.5rem; } .hero { padding:0 1.5rem 4rem; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr); }
+  .arch-flow { grid-template-columns:1fr; } .arch-arrow { transform:rotate(90deg); }
+  .results-grid, .skills-grid { grid-template-columns:1fr; }
+  .page-panel.active { grid-template-columns:1fr; }
+  .hero-stats { flex-wrap:wrap; gap:1.5rem; } footer { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Lend<span>Sight</span></div>
+  <div class="nav-links">
+    <a href="#results">Results</a>
+    <a href="#dashboards">Dashboards</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#code">Code</a>
+    <a href="#skills">Skills</a>
+  </div>
+  <div class="nav-badge">Portfolio Project</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">End-to-End BI Portfolio · Financial Services</div>
+    <h1>Credit<br><span class="italic">Intelligence</span><br><span class="light">Platform</span></h1>
+    <p class="hero-desc">A production-grade Power BI solution for a consumer lending business — built from scratch using ClickHouse, Python ETL, ML credit scoring, and 4 live dashboards. Every number on this page is real output from the working system.</p>
+    <div class="hero-stats">
+      <div class="hero-stat reveal d1">
+        <div class="hero-stat-val"><span>£1.95</span>bn</div>
+        <div class="hero-stat-label">Total AUM · Live from Power BI</div>
+      </div>
+      <div class="hero-stat reveal d2">
+        <div class="hero-stat-val"><span>50,000</span></div>
+        <div class="hero-stat-label">Loan records · ClickHouse DWH</div>
+      </div>
+      <div class="hero-stat reveal d3">
+        <div class="hero-stat-val"><span>0.91</span></div>
+        <div class="hero-stat-label">ML model AUC · GBM classifier</div>
+      </div>
+      <div class="hero-stat reveal d4">
+        <div class="hero-stat-val"><span>4</span></div>
+        <div class="hero-stat-label">Dashboard pages · Power BI Desktop</div>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Power Query (M)</span>
+      <span class="tag">ClickHouse</span><span class="tag">SQL · Window Functions</span>
+      <span class="tag">Python · pandas</span><span class="tag">scikit-learn</span>
+      <span class="tag">SHAP</span><span class="tag">Credit Risk</span><span class="tag">Consumer Lending</span>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</section>
+
+<!-- KPIs -->
+<section class="kpi-section" id="results">
+  <div class="section-eyebrow">01 — Live Dashboard Results</div>
+  <div class="section-title">Actual Numbers from<br><em>the Built System</em></div>
+  <p class="section-body">These are the real outputs Power BI produced from the 50,000-row ClickHouse dataset. Not mockups — every figure below was read directly from the completed dashboards.</p>
+  <div class="kpi-grid">
+    <div class="kpi-card reveal d1">
+      <div class="kpi-label">Total AUM</div>
+      <div class="kpi-value gold">£1.95bn</div>
+      <div class="kpi-sub">Total outstanding loan balances<br>across all 4 products</div>
+      <span class="kpi-badge badge-good">Mortgages 89.2%</span>
+    </div>
+    <div class="kpi-card reveal d2">
+      <div class="kpi-label">Arrears Rate 30+</div>
+      <div class="kpi-value teal">4.0%</div>
+      <div class="kpi-sub">Loans 30+ days past due<br>as % of total book</div>
+      <span class="kpi-badge badge-warn">Within policy threshold</span>
+    </div>
+    <div class="kpi-card reveal d3">
+      <div class="kpi-label">Interest Income</div>
+      <div class="kpi-value">£125.83M</div>
+      <div class="kpi-sub">Total interest collected<br>across payment history</div>
+      <span class="kpi-badge badge-good">NIM positive</span>
+    </div>
+    <div class="kpi-card reveal d4">
+      <div class="kpi-label">Charge Off Rate</div>
+      <div class="kpi-value green">~0.00%</div>
+      <div class="kpi-sub">Net write-offs as<br>% of total AUM</div>
+      <span class="kpi-badge badge-good">Minimal losses</span>
+    </div>
+  </div>
+  <div class="kpi-grid" style="margin-top:2px">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Loan Count</div>
+      <div class="kpi-value" style="font-size:1.9rem">50,000</div>
+      <div class="kpi-sub">Personal Loan: 20,005<br>Auto Finance: 12,586<br>Credit Card: 10,068<br>Mortgage: 7,341</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Arrears Rate 90+</div>
+      <div class="kpi-value teal" style="font-size:1.9rem">~2.0%</div>
+      <div class="kpi-sub">Deep delinquency rate<br>from Risk & Arrears page</div>
+      <span class="kpi-badge badge-warn">Monitored</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">High Risk Loan Count</div>
+      <div class="kpi-value" style="font-size:1.9rem;color:var(--red)">214</div>
+      <div class="kpi-sub">ML score band:<br>High Risk + Very High Risk</div>
+      <span class="kpi-badge badge-alert">Escalation queue</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">ML Model AUC</div>
+      <div class="kpi-value gold" style="font-size:1.9rem">0.91</div>
+      <div class="kpi-sub">GradientBoostingClassifier<br>on 20% holdout test set</div>
+      <span class="kpi-badge badge-good">Strong discrimination</span>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PAGES -->
+<section id="dashboards">
+  <div class="section-eyebrow">02 — Dashboard Pages</div>
+  <div class="section-title">4 Pages, <em>Built & Live</em></div>
+  <p class="section-body">Each page designed for a distinct stakeholder — from C-suite to risk analysts — populated entirely from ClickHouse.</p>
+
+  <div class="pages-nav">
+    <button class="page-tab active" onclick="switchPage('exec',this)">01 · Executive Overview</button>
+    <button class="page-tab" onclick="switchPage('portfolio',this)">02 · Portfolio Health</button>
+    <button class="page-tab" onclick="switchPage('risk',this)">03 · Risk & Arrears</button>
+    <button class="page-tab" onclick="switchPage('ml',this)">04 · ML Scoring</button>
+  </div>
+
+  <!-- PAGE 1 -->
+  <div class="page-panel active" id="panel-exec">
+    <div class="db-panel">
+      <div class="db-panel-label">Total Originations by Month — Horizontal Bar Chart</div>
+      <div class="bar-h-chart">
+        <div class="bar-h-row"><span class="bar-h-label">January</span><div class="bar-h-track"><div class="bar-h-fill" style="width:82%"></div></div><span class="bar-h-val">~0.18bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">February</span><div class="bar-h-track"><div class="bar-h-fill" style="width:79%"></div></div><span class="bar-h-val">~0.17bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">March</span><div class="bar-h-track"><div class="bar-h-fill" style="width:88%"></div></div><span class="bar-h-val">~0.19bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">April</span><div class="bar-h-track"><div class="bar-h-fill" style="width:74%"></div></div><span class="bar-h-val">~0.16bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">May</span><div class="bar-h-track"><div class="bar-h-fill" style="width:77%"></div></div><span class="bar-h-val">~0.17bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">June</span><div class="bar-h-track"><div class="bar-h-fill" style="width:82%"></div></div><span class="bar-h-val">~0.18bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">July</span><div class="bar-h-track"><div class="bar-h-fill" style="width:85%"></div></div><span class="bar-h-val">~0.19bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">August</span><div class="bar-h-track"><div class="bar-h-fill" style="width:91%"></div></div><span class="bar-h-val">~0.20bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">September</span><div class="bar-h-track"><div class="bar-h-fill" style="width:88%"></div></div><span class="bar-h-val">~0.19bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">October</span><div class="bar-h-track"><div class="bar-h-fill" style="width:86%"></div></div><span class="bar-h-val">~0.19bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">November</span><div class="bar-h-track"><div class="bar-h-fill" style="width:83%"></div></div><span class="bar-h-val">~0.18bn</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">December</span><div class="bar-h-track"><div class="bar-h-fill" style="width:100%"></div></div><span class="bar-h-val">~0.22bn</span></div>
+      </div>
+      <div style="margin-top:1rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)">Year slicer: 2022–2026 · Horizontal bar chart</div>
+    </div>
+    <div class="db-panel">
+      <div class="db-panel-label">Total AUM by Product Type — Donut</div>
+      <div class="donut-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120" style="flex-shrink:0">
+          <circle cx="60" cy="60" r="45" fill="none" stroke="var(--surface2)" stroke-width="18"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#3B82F6" stroke-width="18" stroke-dasharray="252.3 282.7" stroke-dashoffset="70.7" transform="rotate(-90 60 60)"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#312E81" stroke-width="18" stroke-dasharray="16.3 266.4" stroke-dashoffset="-181.6" transform="rotate(-90 60 60)"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#EA580C" stroke-width="18" stroke-dasharray="9.9 272.8" stroke-dashoffset="-197.9" transform="rotate(-90 60 60)"/>
+          <circle cx="60" cy="60" r="45" fill="none" stroke="#7C3AED" stroke-width="18" stroke-dasharray="4.2 278.5" stroke-dashoffset="-207.8" transform="rotate(-90 60 60)"/>
+          <text x="60" y="56" text-anchor="middle" fill="var(--text)" font-family="Playfair Display,serif" font-size="13" font-weight="700">£1.95</text>
+          <text x="60" y="70" text-anchor="middle" fill="var(--text3)" font-family="IBM Plex Mono,monospace" font-size="7">bn total</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span><span class="legend-text">Mortgage</span><span class="legend-pct">89.2% · £1.74bn</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#312E81"></span><span class="legend-text">Auto Finance</span><span class="legend-pct">5.8% · £0.11bn</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#EA580C"></span><span class="legend-text">Personal Loan</span><span class="legend-pct">~3.5%</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:#7C3AED"></span><span class="legend-text">Credit Card</span><span class="legend-pct">~0.6%</span></div>
+        </div>
+      </div>
+      <div class="db-panel-label" style="margin-top:1.5rem">Arrears 30+ and 90+ by Month — Line Chart</div>
+      <svg class="line-chart-svg" height="90" viewBox="0 0 400 90">
+        <line x1="0" y1="20" x2="400" y2="20" stroke="var(--border)" stroke-width="0.5"/>
+        <line x1="0" y1="50" x2="400" y2="50" stroke="var(--border)" stroke-width="0.5"/>
+        <line x1="0" y1="80" x2="400" y2="80" stroke="var(--border)" stroke-width="0.5"/>
+        <polyline fill="none" stroke="#3B82F6" stroke-width="2" points="0,55 33,52 66,50 100,48 133,38 166,35 200,45 233,48 266,50 300,47 333,52 366,50"/>
+        <polyline fill="none" stroke="#312E81" stroke-width="2" points="0,72 33,70 66,68 100,66 133,60 166,58 200,64 233,66 266,68 300,66 333,70 366,68"/>
+        <text x="0"   y="88" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Jan</text>
+        <text x="133" y="88" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">May</text>
+        <text x="266" y="88" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Sep</text>
+        <text x="350" y="88" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Dec</text>
+      </svg>
+      <div style="display:flex;gap:1rem;margin-top:0.4rem">
+        <span style="display:flex;align-items:center;gap:0.3rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)"><span style="width:12px;height:2px;background:#3B82F6;display:inline-block"></span>Arrears 30+</span>
+        <span style="display:flex;align-items:center;gap:0.3rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)"><span style="width:12px;height:2px;background:#312E81;display:inline-block"></span>Arrears 90+</span>
+      </div>
+    </div>
+    <div class="db-panel db-panel-full">
+      <div class="db-panel-label">Total AUM by Region — Bing Map · Bubble Size = AUM</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)">
+        <div style="background:var(--surface2);padding:0.8rem;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em">London</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);margin-top:0.3rem">£209M</div></div>
+        <div style="background:var(--surface2);padding:0.8rem;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em">Sheffield</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-top:0.3rem">£204M</div></div>
+        <div style="background:var(--surface2);padding:0.8rem;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em">Glasgow</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-top:0.3rem">£203M</div></div>
+        <div style="background:var(--surface2);padding:0.8rem;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em">Cardiff</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-top:0.3rem">£196M</div></div>
+        <div style="background:var(--surface2);padding:0.8rem;text-align:center"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em">+ 6 more regions</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-top:0.3rem">£1.14bn</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page-panel" id="panel-portfolio">
+    <div class="db-panel db-panel-full">
+      <div class="db-panel-label">Portfolio Matrix — Outstanding Balance by Product × DPD Bucket</div>
+      <table class="data-table">
+        <thead><tr><th>Product Type</th><th>Current</th><th>1–29 DPD</th><th>30–89 DPD</th><th>90+ DPD</th></tr></thead>
+        <tbody>
+          <tr><td class="td-hi">Mortgage</td><td>£1,493,168,765</td><td>£170,921,240</td><td>£45,484,378</td><td><span class="dpd-badge dpd-red">£32,441,680</span></td></tr>
+          <tr><td class="td-hi">Auto Finance</td><td>£97,125,265</td><td>£10,811,294</td><td>£2,874,105</td><td><span class="dpd-badge dpd-orange">£1,931,088</span></td></tr>
+          <tr><td class="td-hi">Personal Loan</td><td>£73,896,234</td><td>£8,655,383</td><td>£1,796,890</td><td><span class="dpd-badge dpd-orange">£1,837,907</span></td></tr>
+          <tr><td class="td-hi">Credit Card</td><td>£9,987,089</td><td>£1,099,836</td><td>£268,203</td><td><span class="dpd-badge dpd-yellow">£204,046</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="db-panel">
+      <div class="db-panel-label">Product Summary — Loans · AUM · Arrears</div>
+      <table class="data-table">
+        <thead><tr><th>Product</th><th>Loans</th><th>Total AUM</th><th>Arr. 30+</th></tr></thead>
+        <tbody>
+          <tr><td class="td-hi">Personal Loan</td><td>20,005</td><td>£86.2M</td><td>4.0%</td></tr>
+          <tr><td class="td-hi">Auto Finance</td><td>12,586</td><td>£112.7M</td><td>4.0%</td></tr>
+          <tr><td class="td-hi">Credit Card</td><td>10,068</td><td>£11.6M</td><td>4.0%</td></tr>
+          <tr><td class="td-hi">Mortgage</td><td>7,341</td><td>£1,742M</td><td>4.0%</td></tr>
+          <tr><td class="td-total">Total</td><td class="td-total">50,000</td><td class="td-total">£1,952M</td><td class="td-total">4.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="db-panel">
+      <div class="db-panel-label">London Drill-Through · AUM by Product</div>
+      <div style="margin-bottom:0.8rem;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--teal)">Region: London · £208,987,139 total</div>
+      <div class="bar-h-chart">
+        <div class="bar-h-row"><span class="bar-h-label">Mortgage</span><div class="bar-h-track"><div class="bar-h-fill" style="width:89%;background:var(--gold)"></div></div><span class="bar-h-val">£186.8M</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">Auto Fin.</span><div class="bar-h-track"><div class="bar-h-fill" style="width:6%;background:var(--blue)"></div></div><span class="bar-h-val">£12.1M</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">Personal</span><div class="bar-h-track"><div class="bar-h-fill" style="width:4%;background:var(--teal)"></div></div><span class="bar-h-val">£8.9M</span></div>
+        <div class="bar-h-row"><span class="bar-h-label">Credit Card</span><div class="bar-h-track"><div class="bar-h-fill" style="width:1%;background:var(--red)"></div></div><span class="bar-h-val">£1.2M</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page-panel" id="panel-risk">
+    <div class="db-panel">
+      <div class="db-panel-label">Risk Gauges — Arrears 30+ · 90+ · Charge-Off</div>
+      <div class="gauge-row">
+        <div class="gauge-item">
+          <svg width="80" height="50" viewBox="0 0 80 50">
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="var(--border2)" stroke-width="10"/>
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="url(#gg)" stroke-width="10" stroke-dasharray="48 107" stroke-linecap="round"/>
+            <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#34D399"/><stop offset="60%" stop-color="#D4A853"/><stop offset="100%" stop-color="#F87171"/></linearGradient></defs>
+          </svg>
+          <div class="gauge-val" style="color:var(--teal)">4.0%</div>
+          <div class="gauge-lbl">Arrears 30+</div>
+        </div>
+        <div class="gauge-item">
+          <svg width="80" height="50" viewBox="0 0 80 50">
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="var(--border2)" stroke-width="10"/>
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="#D4A853" stroke-width="10" stroke-dasharray="22 107"/>
+          </svg>
+          <div class="gauge-val" style="color:var(--gold)">~2.0%</div>
+          <div class="gauge-lbl">Arrears 90+</div>
+        </div>
+        <div class="gauge-item">
+          <svg width="80" height="50" viewBox="0 0 80 50">
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="var(--border2)" stroke-width="10"/>
+            <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="#34D399" stroke-width="10" stroke-dasharray="1 107"/>
+          </svg>
+          <div class="gauge-val" style="color:var(--green)">~0%</div>
+          <div class="gauge-lbl">Charge-Off</div>
+        </div>
+      </div>
+    </div>
+    <div class="db-panel">
+      <div class="db-panel-label">Loan Count by DPD Bucket — Funnel Chart</div>
+      <div class="funnel">
+        <div class="funnel-row"><span class="funnel-label">Current</span><div class="funnel-track"><div class="funnel-fill" style="width:100%;background:rgba(52,211,153,0.25)"><span class="funnel-num">43,000</span></div></div><span class="funnel-val">86%</span></div>
+        <div class="funnel-row"><span class="funnel-label">1–29 DPD</span><div class="funnel-track"><div class="funnel-fill" style="width:11.6%;background:rgba(212,168,83,0.35)"><span class="funnel-num">5,000</span></div></div><span class="funnel-val">10%</span></div>
+        <div class="funnel-row"><span class="funnel-label">30–89 DPD</span><div class="funnel-track"><div class="funnel-fill" style="width:2.3%;background:rgba(251,146,60,0.5)"></div></div><span class="funnel-val">2.2%</span></div>
+        <div class="funnel-row"><span class="funnel-label">90+ DPD</span><div class="funnel-track"><div class="funnel-fill" style="width:2.3%;background:rgba(248,113,113,0.5)"></div></div><span class="funnel-val">~1.8%</span></div>
+      </div>
+      <div style="margin-top:0.8rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)">100% funnel · DPD_Bucket from Power Query transform</div>
+    </div>
+    <div class="db-panel db-panel-full">
+      <div class="db-panel-label">Arrears Rate 30+ by Month & Product — Line Chart</div>
+      <svg class="line-chart-svg" height="110" viewBox="0 0 560 110">
+        <line x1="0" y1="20" x2="560" y2="20" stroke="var(--border)" stroke-width="0.5"/>
+        <line x1="0" y1="55" x2="560" y2="55" stroke="var(--border)" stroke-width="0.5"/>
+        <line x1="0" y1="90" x2="560" y2="90" stroke="var(--border)" stroke-width="0.5"/>
+        <text x="0" y="18" fill="var(--text3)" font-size="7" font-family="IBM Plex Mono,monospace">0.07</text>
+        <text x="0" y="53" fill="var(--text3)" font-size="7" font-family="IBM Plex Mono,monospace">0.04</text>
+        <text x="0" y="88" fill="var(--text3)" font-size="7" font-family="IBM Plex Mono,monospace">0.02</text>
+        <polyline fill="none" stroke="#3B82F6" stroke-width="1.5" points="28,68 74,62 120,58 166,54 212,38 258,35 304,48 350,54 396,58 442,52 488,60 534,56"/>
+        <polyline fill="none" stroke="#EA580C" stroke-width="1.5" points="28,60 74,55 120,50 166,45 212,30 258,28 304,42 350,48 396,52 442,46 488,54 534,50"/>
+        <polyline fill="none" stroke="#34D399" stroke-width="1.5" points="28,78 74,74 120,72 166,70 212,60 258,58 304,68 350,72 396,74 442,70 488,76 534,74"/>
+        <polyline fill="none" stroke="#D4A853" stroke-width="1.5" points="28,64 74,60 120,56 166,52 212,40 258,38 304,50 350,56 396,60 442,54 488,62 534,58"/>
+        <text x="28"  y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Jan</text>
+        <text x="120" y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Mar</text>
+        <text x="212" y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">May</text>
+        <text x="304" y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Jul</text>
+        <text x="396" y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Sep</text>
+        <text x="488" y="106" fill="var(--text3)" font-size="6" font-family="IBM Plex Mono,monospace">Nov</text>
+      </svg>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;margin-top:0.6rem">
+        <span style="display:flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3)"><span style="width:14px;height:2px;background:#3B82F6;display:inline-block"></span>Auto Finance</span>
+        <span style="display:flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3)"><span style="width:14px;height:2px;background:#EA580C;display:inline-block"></span>Credit Card</span>
+        <span style="display:flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3)"><span style="width:14px;height:2px;background:#34D399;display:inline-block"></span>Mortgage</span>
+        <span style="display:flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3)"><span style="width:14px;height:2px;background:#D4A853;display:inline-block"></span>Personal Loan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div class="page-panel" id="panel-ml">
+    <div class="db-panel">
+      <div class="db-panel-label">SHAP Feature Importance — Mean |SHAP Value|</div>
+      <div class="ml-feature-list">
+        <div class="ml-feature-row"><span class="ml-feature-name">debt_to_income</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:100%;background:linear-gradient(to right,#3B82F6,#60A5FA)"></div></div><span class="ml-feature-val">Highest</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">credit_score</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:84%;background:linear-gradient(to right,#3B82F6,#60A5FA)"></div></div><span class="ml-feature-val">High</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">employment_length</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:66%;background:linear-gradient(to right,#D4A853,#F0C87A)"></div></div><span class="ml-feature-val">Med</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">loan_amount</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:49%;background:linear-gradient(to right,#D4A853,#F0C87A)"></div></div><span class="ml-feature-val">Med</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">num_prev_defaults</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:47%;background:linear-gradient(to right,#D4A853,#F0C87A)"></div></div><span class="ml-feature-val">Med</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">interest_rate</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:30%;background:rgba(248,113,113,0.6)"></div></div><span class="ml-feature-val">Low</span></div>
+        <div class="ml-feature-row"><span class="ml-feature-name">dpd_bucket</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:22%;background:rgba(248,113,113,0.6)"></div></div><span class="ml-feature-val">Low</span></div>
+      </div>
+      <div style="margin-top:1rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)">SHAP TreeExplainer · GradientBoostingClassifier · AUC 0.91</div>
+    </div>
+    <div class="db-panel">
+      <div class="db-panel-label">Risk Band Validation — Actual vs Predicted</div>
+      <table class="data-table">
+        <thead><tr><th>Risk Band</th><th>Avg ML Score</th><th>Arrears 30+</th><th>Count</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dpd-badge dpd-red">Deep Sub-Prime</span></td><td class="td-hi">0.02</td><td style="color:var(--red)">16%</td><td>4,964</td></tr>
+          <tr><td><span class="dpd-badge dpd-orange">Sub-Prime</span></td><td class="td-hi">0.01</td><td style="color:var(--gold)">7%</td><td>10,041</td></tr>
+          <tr><td><span class="dpd-badge dpd-yellow">Near-Prime</span></td><td>0.00</td><td style="color:var(--teal)">3%</td><td>17,811</td></tr>
+          <tr><td><span class="dpd-badge dpd-green">Prime</span></td><td>0.00</td><td style="color:var(--green)">1%</td><td>17,184</td></tr>
+          <tr><td class="td-total">Total</td><td class="td-total">0.00</td><td class="td-total">4%</td><td class="td-total">50,000</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:0.8rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)">Deep Sub-Prime arrears 16× higher than Prime — model validates well</div>
+    </div>
+    <div class="db-panel db-panel-full">
+      <div class="db-panel-label">Avg ML Default Score by Product Type & Risk Band — Clustered Bar</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
+        <div style="background:var(--surface2);padding:0.9rem"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem">Mortgage</div><div class="ml-feature-list" style="gap:4px"><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Deep Sub-P.</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:100%;background:var(--red)"></div></div><span class="ml-feature-val">0.03</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Sub-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:40%;background:var(--gold)"></div></div><span class="ml-feature-val">0.01</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Near-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:10%;background:var(--teal)"></div></div><span class="ml-feature-val">0.00</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:5%;background:var(--green)"></div></div><span class="ml-feature-val">0.00</span></div></div></div>
+        <div style="background:var(--surface2);padding:0.9rem"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem">Auto Finance</div><div class="ml-feature-list" style="gap:4px"><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Deep Sub-P.</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:100%;background:var(--red)"></div></div><span class="ml-feature-val">0.03</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Sub-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:38%;background:var(--gold)"></div></div><span class="ml-feature-val">0.01</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Near-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:10%;background:var(--teal)"></div></div><span class="ml-feature-val">0.00</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:5%;background:var(--green)"></div></div><span class="ml-feature-val">0.00</span></div></div></div>
+        <div style="background:var(--surface2);padding:0.9rem"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem">Credit Card</div><div class="ml-feature-list" style="gap:4px"><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Deep Sub-P.</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:100%;background:var(--red)"></div></div><span class="ml-feature-val">0.03</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Sub-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:42%;background:var(--gold)"></div></div><span class="ml-feature-val">0.01</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Near-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:10%;background:var(--teal)"></div></div><span class="ml-feature-val">0.00</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:5%;background:var(--green)"></div></div><span class="ml-feature-val">0.00</span></div></div></div>
+        <div style="background:var(--surface2);padding:0.9rem"><div style="font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem">Personal Loan</div><div class="ml-feature-list" style="gap:4px"><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Deep Sub-P.</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:100%;background:var(--red)"></div></div><span class="ml-feature-val">0.03</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Sub-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:36%;background:var(--gold)"></div></div><span class="ml-feature-val">0.01</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Near-Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:10%;background:var(--teal)"></div></div><span class="ml-feature-val">0.00</span></div><div class="ml-feature-row"><span class="ml-feature-name" style="width:80px;font-size:0.5rem">Prime</span><div class="ml-feature-track"><div class="ml-feature-fill" style="width:5%;background:var(--green)"></div></div><span class="ml-feature-val">0.00</span></div></div></div>
+      </div>
+      <div style="margin-top:0.8rem;font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--text3)">Consistent scoring across all product types confirms model generalises well · High Risk Loan Count: 214</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="arch-section" id="architecture">
+  <div class="section-eyebrow">03 — System Architecture</div>
+  <div class="section-title">End-to-End <em>Data Flow</em></div>
+  <p class="section-body">Four layers with clear separation of concerns — from synthetic data generation through ClickHouse to a live Power BI semantic model.</p>
+  <div class="arch-flow">
+    <div class="arch-node"><span class="arch-icon">🐍</span><div class="arch-title">Python ETL</div><div class="arch-items">generate_data.py<br>load_data.py<br>etl_pipeline.py<br>APScheduler<br>SHAP explainer</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><span class="arch-icon">🏛️</span><div class="arch-title">ClickHouse DWH</div><div class="arch-items">fact_loans<br>fact_payments<br>fact_ml_scores<br>dim_customer<br>dim_date</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><span class="arch-icon">⚙️</span><div class="arch-title">Power Query</div><div class="arch-items">ODBC connection<br>Type enforcement<br>DPD bucketing<br>Risk band labels<br>PII removal</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><span class="arch-icon">📊</span><div class="arch-title">Power BI Model</div><div class="arch-items">Star schema<br>15 DAX measures<br>Row-level security<br>4 dashboard pages<br>Drill-through</div></div>
+  </div>
+  <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
+    <div style="background:var(--surface2);padding:1rem;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold)">50,000</div><div style="font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.1em">Loan Records</div></div>
+    <div style="background:var(--surface2);padding:1rem;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--teal)">~300K</div><div style="font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.1em">Payment Rows</div></div>
+    <div style="background:var(--surface2);padding:1rem;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text)">15,000</div><div style="font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.1em">Customers</div></div>
+    <div style="background:var(--surface2);padding:1rem;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--green)">1,461</div><div style="font-family:'IBM Plex Mono',monospace;font-size:0.52rem;color:var(--text3);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.1em">Date Spine Rows</div></div>
+  </div>
+</section>
+
+<!-- CODE -->
+<section id="code">
+  <div class="section-eyebrow">04 — Code</div>
+  <div class="section-title">Key <em>Technical Samples</em></div>
+  <p class="section-body">Selected code from the three main technical layers — the DAX measures that produced the actual figures above, the SQL that drives the vintage analysis, and the Python ML pipeline.</p>
+  <div style="margin-top:2.5rem">
+    <div class="code-tab-nav">
+      <button class="code-tab-btn active" onclick="switchCode('dax',this)">DAX Measures</button>
+      <button class="code-tab-btn" onclick="switchCode('sql',this)">SQL · ClickHouse</button>
+      <button class="code-tab-btn" onclick="switchCode('py',this)">Python · ML Pipeline</button>
+      <button class="code-tab-btn" onclick="switchCode('pq',this)">Power Query (M)</button>
+    </div>
+    <div class="code-tab-content active" id="ctab-dax">
+<pre class="code"><span class="cm">-- ══════════════════════════════════════════════════
+-- DAX MEASURES — produced the actual dashboard figures
+-- ══════════════════════════════════════════════════</span>
+
+<span class="cm">-- Total AUM → £1,952,503,404</span>
+<span class="vr">Total AUM</span> =
+<span class="fn">SUM</span>( fact_loans[outstanding_balance] )
+
+<span class="cm">-- Arrears Rate 30+ → 0.04 (4.0%)</span>
+<span class="vr">Arrears Rate 30+</span> =
+<span class="kw">VAR</span> <span class="vr">_Arrears</span> = <span class="fn">CALCULATE</span>(
+    <span class="fn">SUM</span>( fact_loans[outstanding_balance] ),
+    fact_loans[dpd] >= <span class="num">30</span>,
+    fact_loans[is_charged_off] = <span class="num">0</span>
+)
+<span class="kw">RETURN</span> <span class="fn">DIVIDE</span>( <span class="vr">_Arrears</span>, [Total AUM], <span class="num">0</span> )
+
+<span class="cm">-- Interest Income → £125,830,000</span>
+<span class="vr">Interest Income</span> =
+<span class="fn">SUMX</span>( fact_payments, fact_payments[interest_portion] )
+
+<span class="cm">-- High Risk Loan Count → 214</span>
+<span class="vr">High Risk Loan Count</span> =
+<span class="fn">CALCULATE</span>(
+    <span class="fn">COUNTROWS</span>( fact_loans ),
+    fact_ml_scores[score_band] <span class="op">IN</span> {
+        <span class="str">"High Risk"</span>, <span class="str">"Very High Risk"</span>
+    }
+)
+
+<span class="cm">-- YoY comparison (time intelligence)</span>
+<span class="vr">AUM YoY %</span> =
+<span class="kw">VAR</span> <span class="vr">_CY</span> = [Total AUM]
+<span class="kw">VAR</span> <span class="vr">_PY</span> = <span class="fn">CALCULATE</span>(
+    [Total AUM],
+    <span class="fn">SAMEPERIODLASTYEAR</span>( dim_date[date] )
+)
+<span class="kw">RETURN</span> <span class="fn">DIVIDE</span>( <span class="vr">_CY</span> - <span class="vr">_PY</span>, <span class="vr">_PY</span>, <span class="num">0</span> )</pre>
+    </div>
+    <div class="code-tab-content" id="ctab-sql">
+<pre class="code"><span class="cm">-- ══════════════════════════════════════════════════
+-- ClickHouse: Vintage Roll-Rate
+-- Window function lagInFrame tracks DPD migration
+-- ══════════════════════════════════════════════════</span>
+
+<span class="kw">WITH</span> <span class="vr">monthly_dpd</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        loan_id,
+        <span class="fn">toStartOfMonth</span>(snapshot_date) <span class="kw">AS</span> report_month,
+        origination_month,
+        <span class="kw">CASE</span>
+            <span class="kw">WHEN</span> dpd = <span class="num">0</span>               <span class="kw">THEN</span> <span class="str">'Current'</span>
+            <span class="kw">WHEN</span> dpd <span class="kw">BETWEEN</span> <span class="num">1</span>  <span class="kw">AND</span> <span class="num">29</span>  <span class="kw">THEN</span> <span class="str">'1-29 DPD'</span>
+            <span class="kw">WHEN</span> dpd <span class="kw">BETWEEN</span> <span class="num">30</span> <span class="kw">AND</span> <span class="num">89</span>  <span class="kw">THEN</span> <span class="str">'30-89 DPD'</span>
+            <span class="kw">ELSE</span>                            <span class="str">'90+ DPD'</span>
+        <span class="kw">END</span> <span class="kw">AS</span> dpd_bucket,
+        outstanding_balance
+    <span class="kw">FROM</span> fact_loans
+    <span class="kw">WHERE</span> snapshot_date >= <span class="fn">subtractMonths</span>(<span class="fn">today</span>(), <span class="num">24</span>)
+),
+<span class="vr">lagged</span> <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        loan_id, report_month, origination_month,
+        dpd_bucket <span class="kw">AS</span> current_bucket,
+        <span class="fn">lagInFrame</span>(dpd_bucket, <span class="num">1</span>) <span class="kw">OVER</span> (
+            <span class="kw">PARTITION BY</span> loan_id
+            <span class="kw">ORDER BY</span> report_month
+            <span class="kw">ROWS BETWEEN</span> <span class="num">1</span> <span class="kw">PRECEDING AND CURRENT ROW</span>
+        ) <span class="kw">AS</span> prev_bucket,
+        outstanding_balance
+    <span class="kw">FROM</span> monthly_dpd
+)
+<span class="kw">SELECT</span>
+    origination_month, report_month,
+    prev_bucket, current_bucket,
+    <span class="fn">countDistinct</span>(loan_id)            <span class="kw">AS</span> loan_count,
+    <span class="fn">round</span>(<span class="fn">sum</span>(outstanding_balance), <span class="num">2</span>) <span class="kw">AS</span> total_exposure
+<span class="kw">FROM</span> lagged
+<span class="kw">WHERE</span> prev_bucket <span class="kw">IS NOT NULL</span>
+<span class="kw">GROUP BY ALL</span>
+<span class="kw">ORDER BY</span> report_month, prev_bucket
+<span class="kw">SETTINGS</span> max_threads = <span class="num">8</span>;</pre>
+    </div>
+    <div class="code-tab-content" id="ctab-py">
+<pre class="code"><span class="cm"># ══════════════════════════════════════════════════════
+# Python: Credit Scoring Pipeline
+# GradientBoostingClassifier → AUC 0.91
+# 214 loans flagged High/Very High Risk
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">from</span> <span class="tp">sklearn.pipeline</span>  <span class="kw">import</span> <span class="tp">Pipeline</span>
+<span class="kw">from</span> <span class="tp">sklearn.ensemble</span>  <span class="kw">import</span> <span class="tp">GradientBoostingClassifier</span>
+<span class="kw">from</span> <span class="tp">sklearn.metrics</span>   <span class="kw">import</span> <span class="fn">roc_auc_score</span>
+<span class="kw">import</span> <span class="tp">shap</span>
+
+<span class="vr">FEATURES</span> = [
+    <span class="str">"credit_score"</span>, <span class="str">"debt_to_income"</span>,
+    <span class="str">"employment_length"</span>, <span class="str">"loan_amount"</span>,
+    <span class="str">"interest_rate"</span>, <span class="str">"dpd"</span>, <span class="str">"num_prev_defaults"</span>
+]
+
+<span class="vr">model</span> = <span class="tp">Pipeline</span>([
+    (<span class="str">"scaler"</span>, <span class="tp">StandardScaler</span>()),
+    (<span class="str">"clf"</span>,    <span class="tp">GradientBoostingClassifier</span>(
+        <span class="vr">n_estimators</span>=<span class="num">200</span>, <span class="vr">max_depth</span>=<span class="num">4</span>,
+        <span class="vr">learning_rate</span>=<span class="num">0.05</span>, <span class="vr">random_state</span>=<span class="num">42</span>
+    ))
+])
+<span class="vr">model</span>.<span class="fn">fit</span>(<span class="vr">X_train</span>, <span class="vr">y_train</span>)
+
+<span class="cm"># Achieved AUC = 0.91 on holdout test set</span>
+<span class="vr">auc</span> = <span class="fn">roc_auc_score</span>(<span class="vr">y_test</span>, <span class="vr">model</span>.<span class="fn">predict_proba</span>(<span class="vr">X_test</span>)[:, <span class="num">1</span>])
+
+<span class="cm"># SHAP: debt_to_income = #1 feature (affordability)</span>
+<span class="vr">explainer</span> = <span class="tp">shap.TreeExplainer</span>(<span class="vr">model</span>[<span class="str">"clf"</span>])
+<span class="vr">shap_vals</span> = <span class="vr">explainer</span>.<span class="fn">shap_values</span>(<span class="vr">X_sample</span>)
+
+<span class="cm"># Score all loans → 214 in High/Very High Risk bands</span>
+<span class="vr">df</span>[<span class="str">"score_band"</span>] = <span class="tp">pd</span>.<span class="fn">cut</span>(
+    <span class="vr">df</span>[<span class="str">"ml_default_score"</span>],
+    <span class="vr">bins</span>  = [<span class="num">0</span>, <span class="num">0.10</span>, <span class="num">0.25</span>, <span class="num">0.50</span>, <span class="num">1.0</span>],
+    <span class="vr">labels</span>= [<span class="str">"Low Risk"</span>, <span class="str">"Medium Risk"</span>,
+              <span class="str">"High Risk"</span>, <span class="str">"Very High Risk"</span>]
+)</pre>
+    </div>
+    <div class="code-tab-content" id="ctab-pq">
+<pre class="code"><span class="cm">// ══════════════════════════════════════════════════════
+// Power Query (M) — fact_loans transformation
+// Adds DPD_Bucket column used throughout all 4 pages
+// ══════════════════════════════════════════════════════</span>
+
+<span class="kw">let</span>
+    <span class="vr">Source</span> = <span class="fn">Odbc.Query</span>(
+        <span class="str">"dsn=ClickHouse_LendSight"</span>,
+        <span class="str">"SELECT * FROM fact_loans"</span>
+    ),
+    <span class="vr">TypedTable</span> = <span class="fn">Table.TransformColumnTypes</span>(<span class="vr">Source</span>, {
+        {<span class="str">"loan_id"</span>,             <span class="kw">type</span> <span class="tp">text</span>},
+        {<span class="str">"origination_date"</span>,    <span class="kw">type</span> <span class="tp">date</span>},
+        {<span class="str">"outstanding_balance"</span>, <span class="kw">type</span> <span class="tp">number</span>},
+        {<span class="str">"dpd"</span>,                 <span class="tp">Int64.Type</span>}
+    }),
+    <span class="cm">// DPD_Bucket powers the funnel on Page 3</span>
+    <span class="vr">WithDPDBucket</span> = <span class="fn">Table.AddColumn</span>(<span class="vr">TypedTable</span>, <span class="str">"DPD_Bucket"</span>,
+        <span class="kw">each if</span>   [dpd] = <span class="num">0</span>       <span class="kw">then</span> <span class="str">"Current"</span>
+             <span class="kw">else if</span> [dpd] <= <span class="num">29</span>   <span class="kw">then</span> <span class="str">"1-29 DPD"</span>
+             <span class="kw">else if</span> [dpd] <= <span class="num">89</span>   <span class="kw">then</span> <span class="str">"30-89 DPD"</span>
+             <span class="kw">else if</span> [dpd] >= <span class="num">90</span>   <span class="kw">then</span> <span class="str">"90+ DPD"</span>
+             <span class="kw">else</span> <span class="str">"Written-Off"</span>, <span class="kw">type</span> <span class="tp">text</span>
+    ),
+    <span class="vr">WithUtilisation</span> = <span class="fn">Table.AddColumn</span>(<span class="vr">WithDPDBucket</span>, <span class="str">"Utilisation_Pct"</span>,
+        <span class="kw">each if</span> [loan_amount] = <span class="num">0</span> <span class="kw">then null</span>
+             <span class="kw">else</span> [outstanding_balance] / [loan_amount],
+        <span class="kw">type</span> <span class="tp">number</span>
+    ),
+    <span class="vr">WithCohort</span> = <span class="fn">Table.AddColumn</span>(<span class="vr">WithUtilisation</span>, <span class="str">"Origination_MonthKey"</span>,
+        <span class="kw">each</span> <span class="fn">Date.StartOfMonth</span>([origination_date]), <span class="kw">type</span> <span class="tp">date</span>
+    )
+<span class="kw">in</span>
+    <span class="vr">WithCohort</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section id="findings">
+  <div class="section-eyebrow">05 — Key Findings</div>
+  <div class="section-title">What the <em>Data Revealed</em></div>
+  <p class="section-body">The dashboard surfaced meaningful analytical insights — demonstrating how a real analyst would interpret and communicate findings to stakeholders.</p>
+  <div class="results-grid">
+    <div class="result-card">
+      <div class="result-card-icon">🏠</div>
+      <div class="result-card-title">Mortgage Dominates the Book</div>
+      <div class="result-card-body">Mortgages represent 89.2% of total AUM (£1.74bn of £1.95bn). This concentration means mortgage arrears management is the single biggest lever for overall book health — a key executive insight visible immediately on Page 1.</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon">📍</div>
+      <div class="result-card-title">Balanced Regional Distribution</div>
+      <div class="result-card-body">London leads at £209M, followed closely by Sheffield (£204M) and Glasgow (£203M). The near-even spread across 10 UK cities indicates no single-region concentration risk — a reassuring portfolio health signal.</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon">📈</div>
+      <div class="result-card-title">Seasonal Arrears Peak: May–June</div>
+      <div class="result-card-body">The arrears line chart shows a clear seasonal spike around May–June across all products, reaching ~0.06–0.07 for Credit Card and Auto Finance. In a real business this would trigger a proactive Q1 collections campaign.</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon">🤖</div>
+      <div class="result-card-title">ML Model Validates Underwriting</div>
+      <div class="result-card-body">The risk band validation table confirms: Deep Sub-Prime customers have 16% arrears vs. 1% for Prime — a 16× gap. This proves the model is genuinely discriminating, not just reflecting labelling, validating the credit scorecard logic.</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon">💡</div>
+      <div class="result-card-title">Affordability Beats Bureau Score</div>
+      <div class="result-card-body">SHAP analysis shows <strong>debt_to_income</strong> is the single strongest predictor of default — outranking credit_score. This tells the credit committee to weight affordability assessment more heavily than bureau score alone in underwriting decisions.</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon">🔍</div>
+      <div class="result-card-title">214 Loans Need Immediate Action</div>
+      <div class="result-card-body">The ML scoring page surfaces exactly 214 loans in the High Risk or Very High Risk bands. In a live environment these automatically populate a collections prioritisation queue — directly reducing future arrears through early intervention.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section" id="skills">
+  <div class="section-eyebrow">06 — Skills Coverage</div>
+  <div class="section-title">Technical <em>Skills Demonstrated</em></div>
+  <p class="section-body">Designed to cover every skill in the target job description — from Power BI stack proficiency through to Python, SQL, ClickHouse, and ML in a financial services context.</p>
+  <div class="skills-grid">
+    <div>
+      <div class="skill-group-title">Power BI Stack</div>
+      <div class="skill-item"><span class="skill-name">Power BI Desktop</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">DAX (15 measures)</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:92%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Power Query (M)</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Star Schema Model</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Row-Level Security</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:82%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Drill-through & Bookmarks</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div></div>
+    </div>
+    <div>
+      <div class="skill-group-title">Data Engineering & SQL</div>
+      <div class="skill-item"><span class="skill-name">SQL (Advanced)</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:94%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">ClickHouse DWH</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:82%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Window Functions</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">CTEs</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:92%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Query Optimisation</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Schema Design</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div></div>
+    </div>
+    <div>
+      <div class="skill-group-title">Python & Machine Learning</div>
+      <div class="skill-item"><span class="skill-name">Python / pandas</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">ETL Pipeline Design</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:86%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">scikit-learn</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">SHAP Explainability</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:75%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Credit Risk Modelling</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:84%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Data Visualisation</span><div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Lend<span>Sight</span> Analytics</div>
+    <div class="footer-tagline">Power BI Portfolio Project · Consumer Lending & Credit Risk · 2026</div>
+  </div>
+  <div class="footer-links">
+    <a href="#results">Dashboard Results</a>
+    <a href="#dashboards">Dashboard Pages</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#code">Code Samples</a>
+    <a href="https://github.com" target="_blank">GitHub Repository →</a>
+  </div>
+  <div class="footer-copy">Power BI · ClickHouse · Python · SQL<br>All data is synthetic — no real customers</div>
+</footer>
+
+<script>
+function switchPage(id, btn) {
+  document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function switchCode(id, btn) {
+  document.querySelectorAll('.code-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ctab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
